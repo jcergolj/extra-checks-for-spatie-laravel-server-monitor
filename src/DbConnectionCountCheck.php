@@ -14,11 +14,13 @@ class DbConnectionCountCheck extends CheckDefinition
 
     public function resolve(Process $process)
     {
+        $failWhenAbove = config('server-monitor.mysql.connections', 40);
+
         // -1 ignore last line
         $currentConnections = Str::of($process->getOutput())->split('/\n/')->count() - 1;
 
-        if ($currentConnections > $this->errorThreshold) {
-            return $this->check->fail("There are too many database connections. Max. allowed is {$this->errorThreshold} but there is {$currentConnections} connections.");
+        if ($currentConnections > $failWhenAbove) {
+            return $this->check->fail("There are too many database connections. Max. allowed is {$failWhenAbove} but there is {$currentConnections} connections.");
         }
 
         return $this->check->succeed("There are {$currentConnections} database connections.");

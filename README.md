@@ -43,7 +43,7 @@ default values are 1.4.
 ]
 ```
 
-If loads are 1.4 or below, everything is fine.
+If loads are below threshold, everything is fine.
 
 ### RedisCheck
 It checks if Redis is running.
@@ -57,7 +57,17 @@ It checks the current redis memory consumption.
 
 It executes this command on the server: `redis-cli info memory`.
 
-If it is bellow 5MB, everything is fine.
+You can specify redis memory threshold in `server-monitor.php` config file. If it isn't provided the
+default value is 5MB.
+
+```php
+// config/server-monitor.php
+'redis' => [
+    'memory_threshold' => 6000000,
+]
+```
+
+If it is bellow threshold, everything is fine.
 
 ### HorizonArtisanCommandCheck
 It checks if horizon artisan process is running.
@@ -92,4 +102,14 @@ It checks if the number of mysql connections.
 
 It executes this command on the server: `netstat -an | grep 3306 | grep ESTABLISHED`.
 
-Then counts the number of connections. If it is bellow 40, everything is fine.
+You can specify the db connection threshold in `server-monitor.php` config file. If it isn't provided the
+default value is 40.
+
+```php
+// config/server-monitor.php
+'mysql' => [
+    'connections' => 50,
+]
+```
+
+It counts the number of mysql db connections. If it is bellow threshold, everything is fine.
