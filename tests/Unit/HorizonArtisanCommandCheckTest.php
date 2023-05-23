@@ -36,7 +36,22 @@ class HorizonArtisanCommandCheckTest extends TestCase
 
         $this->check->fresh();
 
-        $this->assertSame('Horizon command is running.', $this->check->last_run_message);
+        $this->assertSame('Horizon command(s) is/are running.', $this->check->last_run_message);
+        $this->assertSame(CheckStatus::SUCCESS, $this->check->status);
+    }
+
+    /** @test */
+    public function success_two_processes()
+    {
+        config()->set('server-monitor.horizon.artisan_command_processes', 2);
+
+        $process = $this->getProcessWithOutput("php php8.2 artisan horizon \n php artisan horizon");
+
+        $this->horizonArtisanCommandCheck->resolve($process);
+
+        $this->check->fresh();
+
+        $this->assertSame('Horizon command(s) is/are running.', $this->check->last_run_message);
         $this->assertSame(CheckStatus::SUCCESS, $this->check->status);
     }
 

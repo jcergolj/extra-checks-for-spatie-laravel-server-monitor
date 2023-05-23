@@ -36,7 +36,22 @@ class HorizonSupervisorCheckTest extends TestCase
 
         $this->check->fresh();
 
-        $this->assertSame('Horizon supervisor is running.', $this->check->last_run_message);
+        $this->assertSame('Horizon supervisor(s) is/are running.', $this->check->last_run_message);
+        $this->assertSame(CheckStatus::SUCCESS, $this->check->status);
+    }
+
+    /** @test */
+    public function success_two_processes()
+    {
+        config()->set('server-monitor.horizon.supervisor_processes', 2);
+
+        $process = $this->getProcessWithOutput("php artisan horizon:supervisor \n php artisan horizon:supervisor");
+
+        $this->horizonSupervisorCheck->resolve($process);
+
+        $this->check->fresh();
+
+        $this->assertSame('Horizon supervisor(s) is/are running.', $this->check->last_run_message);
         $this->assertSame(CheckStatus::SUCCESS, $this->check->status);
     }
 

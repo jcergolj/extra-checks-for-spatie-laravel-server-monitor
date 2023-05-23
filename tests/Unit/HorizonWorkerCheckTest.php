@@ -36,7 +36,23 @@ class HorizonWorkerCheckTest extends TestCase
 
         $this->check->fresh();
 
-        $this->assertSame('Horizon worker is running.', $this->check->last_run_message);
+        $this->assertSame('Horizon worker(s) is/are running.', $this->check->last_run_message);
+        $this->assertSame(CheckStatus::SUCCESS, $this->check->status);
+    }
+
+    /** @test */
+    public function success_two_processes()
+    {
+        config()->set('server-monitor.horizon.worker_processes', 2);
+
+        $process = $this->getProcessWithOutput("/usr/bin/php7.3 artisan horizon:work redis --delay=0 \n
+        /usr/bin/php7.2 artisan horizon:work redis --delay=0");
+
+        $this->horizonWorkerCheck->resolve($process);
+
+        $this->check->fresh();
+
+        $this->assertSame('Horizon worker(s) is/are running.', $this->check->last_run_message);
         $this->assertSame(CheckStatus::SUCCESS, $this->check->status);
     }
 
