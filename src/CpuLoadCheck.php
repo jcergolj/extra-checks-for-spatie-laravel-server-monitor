@@ -8,6 +8,8 @@ use Symfony\Component\Process\Process;
 
 class CpuLoadCheck extends CheckDefinition
 {
+    use Configurable;
+
     public $command = 'uptime';
 
     public function resolve(Process $process)
@@ -17,15 +19,15 @@ class CpuLoadCheck extends CheckDefinition
             ->matchAll('/([\d.]+)/')
             ->toArray();
 
-        if ($oneMinLoad > config('server-monitor.cpu_load.one_minute_threshold', 1.3)) {
+        if ($oneMinLoad > $this->getFromConfig('cpu_load.one_minute_threshold', 1.3)) {
             return $this->check->fail("One minute load is high. It is {$oneMinLoad}.");
         }
 
-        if ($fiveMinLoad > config('server-monitor.cpu_load.five_minute_threshold', 1.3)) {
+        if ($fiveMinLoad > $this->getFromConfig('cpu_load.five_minute_threshold', 1.3)) {
             return $this->check->fail("Five minute load is high. It is {$fiveMinLoad}.");
         }
 
-        if ($fifteenMinLoad > config('server-monitor.cpu_load.fifteen_minute_threshold', 1.3)) {
+        if ($fifteenMinLoad > $this->getFromConfig('cpu_load.fifteen_minute_threshold', 1.3)) {
             return $this->check->fail("Fifteen minute load is high. It is {$fifteenMinLoad}.");
         }
 

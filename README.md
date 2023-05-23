@@ -32,7 +32,7 @@ It checks server loads in last 1, 5 and 15 minutes
 It executes this command on the server: `uptime`.
 
 You can specify cpu load threshold in `server-monitor.php` config file. If it isn't provided the
-default values are 1.4.
+default values are 1.3.
 
 ```php
 // config/server-monitor.php
@@ -150,7 +150,7 @@ default value is 40.
 
 It counts the number of mysql db connections. If it is bellow threshold, everything is fine.
 
-## The default server-monitor.php config file with all the extra custom options
+## The default server-monitor.php config file with all the extra custom options same options for all the hosts
 ```php
 <?php
 
@@ -259,28 +259,97 @@ return [
     ],
 
     'cpu_load' => [
-        'one_minute_threshold' => 1.6,
-        'five_minute_threshold' => 1.2,
-        'fifteen_minute_threshold' => 1.1,
+        'one_minute_threshold' => 1.4,
+        'five_minute_threshold' => 1.4,
+        'fifteen_minute_threshold' => 1.4,
     ],
 
     'redis' => [
-        'memory_threshold' => 6000000,
+        'memory_threshold' => 5000000,
     ],
 
     'horizon' => [
-        'artisan_command_processes' => 2,
-        'supervisor_processes' => 2,
-        'worker_processes' => 2,
+        'artisan_command_processes' => 1,
+        'supervisor_processes' => 1,
+        'worker_processes' => 1,
     ],
 
     'queue' => [
-        'worker_processes' => 2,
+        'worker_processes' => 1,
     ],
 
     'mysql' => [
-        'connections' => 50,
+        'connections' => 40,
     ]
 ];
+```
 
+## The default server-monitor.php config file with all the extra custom options each host with its own values
+How are options obtained? Code explains it well where key is e.g. `mysql.connections`:
+```php
+if (config()->has("server-monitor.{$this->check->host['name']}.{$key}")) {
+    return config("server-monitor.{$this->check->host['name']}.{$key}");
+}
+
+return config("server-monitor.{$key}", $defaultValue);
+```
+### Config file
+```php
+<?php
+
+return [
+    // default values from spatie package
+
+    'host.name.com' => [
+        'cpu_load' => [
+            'one_minute_threshold' => 1.1,
+            'five_minute_threshold' => 1.1,
+            'fifteen_minute_threshold' => 1.1,
+        ],
+
+        'redis' => [
+            'memory_threshold' => 20000,
+        ],
+
+        'horizon' => [
+            'artisan_command_processes' => 1,
+            'supervisor_processes' => 1,
+            'worker_processes' => 1,
+        ],
+
+        'queue' => [
+            'worker_processes' => 1,
+        ],
+
+        'mysql' => [
+            'connections' => 20,
+        ]
+    ],
+
+    'host.name.two.com' => [
+        'cpu_load' => [
+            'one_minute_threshold' => 1.2,
+            'five_minute_threshold' => 1.2,
+            'fifteen_minute_threshold' => 1.2,
+        ],
+
+        'redis' => [
+            'memory_threshold' => 40000,
+        ],
+
+        'horizon' => [
+            'artisan_command_processes' => 2,
+            'supervisor_processes' => 2,
+            'worker_processes' => 2,
+        ],
+
+        'queue' => [
+            'worker_processes' => 2,
+        ],
+
+        'mysql' => [
+            'connections' => 10,
+        ]
+    ]
+];
 ```

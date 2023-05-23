@@ -8,6 +8,8 @@ use Symfony\Component\Process\Process;
 
 class HorizonArtisanCommandCheck extends CheckDefinition
 {
+    use Configurable;
+
     public $command = 'ps aux | grep -E ".*php([0-9]\.[0-9])? .*artisan horizon$" | grep -v grep';
 
     public function resolve(Process $process)
@@ -16,7 +18,7 @@ class HorizonArtisanCommandCheck extends CheckDefinition
             return $this->check->fail('Horizon command is not running.');
         }
 
-        if (Str::of($process->getOutput())->substrCount('artisan horizon') !== config('server-monitor.horizon.artisan_command_processes', 1)) {
+        if (Str::of($process->getOutput())->substrCount('artisan horizon') !== $this->getFromConfig('horizon.artisan_command_processes', 1)) {
             return $this->check->fail('Horizon command(s) is/are not running.');
         }
 

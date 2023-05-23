@@ -2,6 +2,7 @@
 
 namespace Jcergolj\CustomChecks\Tests\Unit;
 
+use Jcergolj\CustomChecks\Configurable;
 use Jcergolj\CustomChecks\CpuLoadCheck;
 use Jcergolj\CustomChecks\Tests\TestCase;
 use Spatie\ServerMonitor\Models\Check;
@@ -77,5 +78,11 @@ class CpuLoadCheckTest extends TestCase
 
         $this->assertSame('Fifteen minute load is high. It is 1.6.', $this->check->last_run_message);
         $this->assertSame(CheckStatus::FAILED, $this->check->status);
+    }
+
+    /** @test */
+    public function assert_configurable_trait_is_used()
+    {
+        $this->assertContains(Configurable::class, class_uses(CpuLoadCheck::class));
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Jcergolj\CustomChecks\Tests\Unit;
 
+use Jcergolj\CustomChecks\Configurable;
 use Jcergolj\CustomChecks\QueueWorkerCheck;
 use Jcergolj\CustomChecks\Tests\TestCase;
 use Spatie\ServerMonitor\Models\Check;
@@ -69,5 +70,11 @@ class QueueWorkerCheckTest extends TestCase
             $this->check->last_run_message
         );
         $this->assertSame(CheckStatus::FAILED, $this->check->status);
+    }
+
+    /** @test */
+    public function assert_configurable_trait_is_used()
+    {
+        $this->assertContains(Configurable::class, class_uses(QueueWorkerCheck::class));
     }
 }

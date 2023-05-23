@@ -8,11 +8,13 @@ use Symfony\Component\Process\Process;
 
 class RedisMemoryCheck extends CheckDefinition
 {
+    use Configurable;
+
     public $command = 'redis-cli info memory';
 
     public function resolve(Process $process)
     {
-        $failWhenAbove = config('server-monitor.redis.memory_threshold', 5000000);
+        $failWhenAbove = $this->getFromConfig('redis.memory_threshold', 5000000);
 
         $currentRedisMemoryUsage = Str::of($process->getOutput())->match('/used_memory:(?<memoryUsage>\d+)/')->toInteger();
 
@@ -23,6 +25,5 @@ class RedisMemoryCheck extends CheckDefinition
         }
 
         $this->check->succeed('Redis memory usage is normal.');
-
     }
 }

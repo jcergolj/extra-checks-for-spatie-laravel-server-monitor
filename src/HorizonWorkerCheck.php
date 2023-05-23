@@ -8,6 +8,8 @@ use Symfony\Component\Process\Process;
 
 class HorizonWorkerCheck extends CheckDefinition
 {
+    use Configurable;
+
     public $command = 'ps aux | grep -E ".*php([0-9]\.[0-9])? .*artisan horizon:work" | grep -v grep';
 
     public function resolve(Process $process)
@@ -16,7 +18,7 @@ class HorizonWorkerCheck extends CheckDefinition
             return $this->check->fail('Horizon worker is not running.');
         }
 
-        if (Str::of($process->getOutput())->substrCount('horizon:work') !== config('server-monitor.horizon.worker_processes', 1)) {
+        if (Str::of($process->getOutput())->substrCount('horizon:work') !== $this->getFromConfig('horizon.worker_processes', 1)) {
             return $this->check->fail('Horizon worker(s) is/are not running.');
         }
 
