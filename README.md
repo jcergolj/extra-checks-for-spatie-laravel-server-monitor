@@ -1,4 +1,4 @@
-# Extra Checks For Spatie Laravel Server Monitor package
+## Extra Checks For Spatie Laravel Server Monitor package
 First you need to install [Spatie Server Monitor Package](https://github.com/spatie/laravel-server-monitor).
 
 Then you need to install this package
@@ -24,9 +24,9 @@ Finally add the following checks to `config\server-monitor.php` file
 ],
 ```
 
-## Custom check overview
+### Custom check overview
 
-### CpuLoadCheck
+#### CpuLoadCheck
 It checks server loads in last 1, 5 and 15 minutes
 
 It executes this command on the server: `uptime`.
@@ -43,22 +43,17 @@ default values are 1.3.
 ]
 ```
 
-If loads are below threshold, everything is fine.
-
-### RedisCheck
+#### RedisCheck
 It checks if Redis is running.
 
 It executes this command on the server: `redis-cli ping`.
 
-If the response of the command is `PONG`, everything is fine.
-
-### RedisMemoryCheck
+#### RedisMemoryCheck
 It checks the current redis memory consumption.
 
 It executes this command on the server: `redis-cli info memory`.
 
-You can specify redis memory threshold in `server-monitor.php` config file. If it isn't provided the
-default value is 5MB.
+You can specify redis memory threshold in `server-monitor.php` config file. Default value is 5MB.
 
 ```php
 // config/server-monitor.php
@@ -67,14 +62,12 @@ default value is 5MB.
 ]
 ```
 
-If it is bellow threshold, everything is fine.
-
-### HorizonArtisanCommandCheck
+#### HorizonArtisanCommandCheck
 It checks if horizon artisan process is running.
 
 It executes this command on the server: `ps aux | grep -E ".*php([0-9]\.[0-9])? .*artisan horizon$" | grep -v grep`.
 
-You can specify the number of horizon processes that should run on the server in `server-monitor.php` config file. If it isn't provided the default value is 1.
+You can specify the number of horizon processes that should run on the server in `server-monitor.php` config file. The default value is 1.
 
 ```php
 // config/server-monitor.php
@@ -83,14 +76,12 @@ You can specify the number of horizon processes that should run on the server in
 ]
 ```
 
-If output contains `artisan horizon`, process is running.
-
-### HorizonSupervisorCheck
+#### HorizonSupervisorCheck
 It checks if horizon supervisor process is running.
 
 It executes this command on the server: `ps aux | grep -E ".*php([0-9]\.[0-9])? .*artisan horizon:supervisor" | grep -v grep`.
 
-You can specify the number of horizon supervisor processes that should run on the server in `server-monitor.php` config file. If it isn't provided the default value is 1.
+You can specify the number of horizon supervisor processes that should run on the server in `server-monitor.php` config file. Default value is 1.
 
 ```php
 // config/server-monitor.php
@@ -99,14 +90,12 @@ You can specify the number of horizon supervisor processes that should run on th
 ]
 ```
 
-If output contains `artisan horizon:supervisor`, process is running.
-
-### HorizonWorkerCheck
+#### HorizonWorkerCheck
 It checks if horizon worker process is running.
 
 It executes this command on the server: `ps aux | grep -E ".*php([0-9]\.[0-9])? .*artisan horizon:work" | grep -v grep`.
 
-You can specify the number of min and max horizon worker processes that should run on the server in `server-monitor.php` config file. If it isn't provided the default value is 1 for both min and max.
+You can specify the number of min and max horizon worker processes that should run on the server in `server-monitor.php` config file. The default value is 1 for both min and max.
 
 ```php
 // config/server-monitor.php
@@ -116,14 +105,12 @@ You can specify the number of min and max horizon worker processes that should r
 ]
 ```
 
-If output contains `artisan horizon:work`, process is running.
-
-### QueueWorkerCheck
+#### QueueWorkerCheck
 It checks if queue worker process is running.
 
 It executes this command on the server: `ps aux | grep -E ".*php([0-9]\.[0-9])? .*artisan queue:work" | grep -v grep`.
 
-You can specify the number of queue worker processes that should run on the server in `server-monitor.php` config file. If it isn't provided the default value is 1.
+You can specify the number of queue worker processes that should run on the server in `server-monitor.php` config file. The default value is 1.
 
 ```php
 // config/server-monitor.php
@@ -132,15 +119,12 @@ You can specify the number of queue worker processes that should run on the serv
 ]
 ```
 
-If output contains `artisan queue:work`, process is running.
-
-### DbConnectionCountCheck
+#### DbConnectionCountCheck
 It checks if the number of mysql connections.
 
 It executes this command on the server: `netstat -an | grep 3306 | grep ESTABLISHED`.
 
-You can specify the db connection threshold in `server-monitor.php` config file. If it isn't provided the
-default value is 40.
+You can specify the db connection threshold in `server-monitor.php` config file. The default value is 40.
 
 ```php
 // config/server-monitor.php
@@ -149,9 +133,7 @@ default value is 40.
 ]
 ```
 
-It counts the number of mysql db connections. If it is bellow threshold, everything is fine.
-
-## The default server-monitor.php config file with all the extra custom options same options for all the hosts
+#### Extended server-monitor.php config file
 ```php
 <?php
 
@@ -282,51 +264,14 @@ return [
 
     'mysql' => [
         'connections' => 40,
-    ]
-];
-```
+    ],
 
-## The default server-monitor.php config file with all the extra custom options each host with its own values
-How are options obtained? Code explains it well where key is e.g. `mysql.connections`:
-```php
-if (config()->has("server-monitor.{$this->check->host['name']}.{$key}")) {
-    return config("server-monitor.{$this->check->host['name']}.{$key}");
-}
-
-return config("server-monitor.{$key}", $defaultValue);
-```
-### Config file
-```php
-<?php
-
-return [
-    // default values from spatie package
-
+    // host specific config values
+    // you can override all or only some values on a host to host basis
     'host.name.com' => [
         'cpu_load' => [
-            'one_minute_threshold' => 1.1,
-            'five_minute_threshold' => 1.1,
-            'fifteen_minute_threshold' => 1.1,
+            'one_minute_threshold' => 0.9,
         ],
-
-        'redis' => [
-            'memory_threshold' => 20000,
-        ],
-
-        'horizon' => [
-            'artisan_command_processes' => 1,
-            'supervisor_processes' => 1,
-            'min_worker_processes' => 1,
-            'max_worker_processes' => 3,
-        ],
-
-        'queue' => [
-            'worker_processes' => 1,
-        ],
-
-        'mysql' => [
-            'connections' => 20,
-        ]
     ],
 
     'host.name.two.com' => [
@@ -357,3 +302,6 @@ return [
     ]
 ];
 ```
+
+#### Extra custom options each host with its own values
+How are custom values obtained? First we check if host specific value exists, then the general one in the config lastly if there is none the default value is used.
