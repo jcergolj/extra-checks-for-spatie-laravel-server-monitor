@@ -18,10 +18,12 @@ class HorizonWorkerCheck extends CheckDefinition
             return $this->check->fail('Horizon worker is not running.');
         }
 
-        if (Str::of($process->getOutput())->substrCount('horizon:work') !== $this->getFromConfig('horizon.worker_processes', 1)) {
-            return $this->check->fail('Horizon worker(s) is/are not running.');
+        if (Str::of($process->getOutput())->substrCount('horizon:work') >= $this->getFromConfig('horizon.min_worker_processes', 1) &&
+            Str::of($process->getOutput())->substrCount('horizon:work') <= $this->getFromConfig('horizon.max_worker_processes', 1)
+        ) {
+            return $this->check->succeed('Horizon worker(s) is/are running.');
         }
 
-        $this->check->succeed('Horizon worker(s) is/are running.');
+        return $this->check->fail('Horizon worker(s) is/are not running.');
     }
 }

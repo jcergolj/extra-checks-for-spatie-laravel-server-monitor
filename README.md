@@ -106,12 +106,13 @@ It checks if horizon worker process is running.
 
 It executes this command on the server: `ps aux | grep -E ".*php([0-9]\.[0-9])? .*artisan horizon:work" | grep -v grep`.
 
-You can specify the number of horizon worker processes that should run on the server in `server-monitor.php` config file. If it isn't provided the default value is 1.
+You can specify the number of min and max horizon worker processes that should run on the server in `server-monitor.php` config file. If it isn't provided the default value is 1 for both min and max.
 
 ```php
 // config/server-monitor.php
 'horizon' => [
-    'worker_processes' => 2,
+    'min_worker_processes' => 2,
+    'max_worker_processes' => 2,
 ]
 ```
 
@@ -271,7 +272,8 @@ return [
     'horizon' => [
         'artisan_command_processes' => 1,
         'supervisor_processes' => 1,
-        'worker_processes' => 1,
+        'min_worker_processes' => 1,
+        'max_worker_processes' => 1,
     ],
 
     'queue' => [
@@ -314,7 +316,8 @@ return [
         'horizon' => [
             'artisan_command_processes' => 1,
             'supervisor_processes' => 1,
-            'worker_processes' => 1,
+            'min_worker_processes' => 1,
+            'max_worker_processes' => 3,
         ],
 
         'queue' => [
@@ -340,7 +343,8 @@ return [
         'horizon' => [
             'artisan_command_processes' => 2,
             'supervisor_processes' => 2,
-            'worker_processes' => 2,
+            'min_worker_processes' => 1,
+            'max_worker_processes' => 2,
         ],
 
         'queue' => [
