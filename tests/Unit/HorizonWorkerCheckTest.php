@@ -70,7 +70,7 @@ class HorizonWorkerCheckTest extends TestCase
 
         $this->check->fresh();
 
-        $this->assertSame('Horizon worker(s) is/are not running.', $this->check->last_run_message);
+        $this->assertSame('Horizon worker(s) is/are not running. 3/1,2', $this->check->last_run_message);
         $this->assertSame(CheckStatus::FAILED, $this->check->status);
     }
 

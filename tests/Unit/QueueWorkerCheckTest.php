@@ -57,6 +57,21 @@ class QueueWorkerCheckTest extends TestCase
     }
 
     /** @test */
+    public function failure_two_processes()
+    {
+        config()->set('server-monitor.queue.worker_processes', 3);
+
+        $process = $this->getProcessWithOutput("php artisan queue:work \n php artisan queue:work");
+
+        $this->queueWorkerCheck->resolve($process);
+
+        $this->check->fresh();
+
+        $this->assertSame('Queue worker(s) is/are not running. 2/3', $this->check->last_run_message);
+        $this->assertSame(CheckStatus::FAILED, $this->check->status);
+    }
+
+    /** @test */
     public function failure()
     {
         $process = $this->getFailedProcess('');

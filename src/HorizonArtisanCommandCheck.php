@@ -18,8 +18,11 @@ class HorizonArtisanCommandCheck extends CheckDefinition
             return $this->check->fail('Horizon command is not running.');
         }
 
-        if (Str::of($process->getOutput())->substrCount('artisan horizon') !== $this->getFromConfig('horizon.artisan_command_processes', 1)) {
-            return $this->check->fail('Horizon command(s) is/are not running.');
+        $currentProcesses = Str::of($process->getOutput())->substrCount('artisan horizon');
+
+        if ($currentProcesses !== $this->getFromConfig('horizon.artisan_command_processes', 1)) {
+            return $this->check
+                ->fail("Horizon command(s) is/are not running. {$currentProcesses}/".$this->getFromConfig('horizon.artisan_command_processes', 1));
         }
 
         $this->check->succeed('Horizon command(s) is/are running.');

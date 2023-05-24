@@ -19,7 +19,7 @@ class RedisMemoryCheck extends CheckDefinition
         $currentRedisMemoryUsage = Str::of($process->getOutput())->match('/used_memory:(?<memoryUsage>\d+)/')->toInteger();
 
         if ($currentRedisMemoryUsage > $failWhenAbove) {
-            $this->check->fail("Redis memory usage is above {$failWhenAbove}. It is {$currentRedisMemoryUsage} bytes.");
+            $this->check->fail("Redis memory usage is above {$failWhenAbove}. {$currentRedisMemoryUsage} / {$failWhenAbove} bytes");
 
             return;
         }

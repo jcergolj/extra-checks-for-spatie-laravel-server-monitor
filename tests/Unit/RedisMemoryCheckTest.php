@@ -51,7 +51,7 @@ class RedisMemoryCheckTest extends TestCase
         $this->check->fresh();
 
         $this->assertSame(
-            'Redis memory usage is above 5000000. It is 5000001 bytes.',
+            'Redis memory usage is above 5000000. 5000001 / 5000000 bytes',
             $this->check->last_run_message
         );
         $this->assertSame(CheckStatus::FAILED, $this->check->status);

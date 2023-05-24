@@ -18,8 +18,10 @@ class HorizonSupervisorCheck extends CheckDefinition
             return $this->check->fail('Horizon supervisor is not running.');
         }
 
-        if (Str::of($process->getOutput())->substrCount('horizon:supervisor') !== $this->getFromConfig('horizon.supervisor_processes', 1)) {
-            return $this->check->fail('Horizon supervisor(s) is/are not running.');
+        $currentProcesses = Str::of($process->getOutput())->substrCount('horizon:supervisor');
+
+        if ($currentProcesses !== $this->getFromConfig('horizon.supervisor_processes', 1)) {
+            return $this->check->fail("Horizon supervisor(s) is/are not running. {$currentProcesses}/".$this->getFromConfig('horizon.supervisor_processes', 1));
         }
 
         $this->check->succeed('Horizon supervisor(s) is/are running.');

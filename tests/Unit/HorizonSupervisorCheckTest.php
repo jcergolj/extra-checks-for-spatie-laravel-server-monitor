@@ -57,6 +57,21 @@ class HorizonSupervisorCheckTest extends TestCase
     }
 
     /** @test */
+    public function failure_two_processes()
+    {
+        config()->set('server-monitor.horizon.supervisor_processes', 3);
+
+        $process = $this->getProcessWithOutput("php artisan horizon:supervisor \n php artisan horizon:supervisor");
+
+        $this->horizonSupervisorCheck->resolve($process);
+
+        $this->check->fresh();
+
+        $this->assertSame('Horizon supervisor(s) is/are not running. 2/3', $this->check->last_run_message);
+        $this->assertSame(CheckStatus::FAILED, $this->check->status);
+    }
+
+    /** @test */
     public function failure()
     {
         $process = $this->getFailedProcess('');

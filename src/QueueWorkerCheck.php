@@ -18,8 +18,10 @@ class QueueWorkerCheck extends CheckDefinition
             return $this->check->fail('Queue worker is not running.');
         }
 
-        if (Str::of($process->getOutput())->substrCount('queue:work') !== $this->getFromConfig('queue.worker_processes', 1)) {
-            return $this->check->fail('Queue worker(s) is/are not running.');
+        $currentProcesses = Str::of($process->getOutput())->substrCount('queue:work');
+        if ($currentProcesses !== $this->getFromConfig('queue.worker_processes', 1)) {
+            return $this->check
+                ->fail("Queue worker(s) is/are not running. {$currentProcesses}/".$this->getFromConfig('queue.worker_processes', 1));
         }
 
         $this->check->succeed('Queue worker(s) is/are running.');
