@@ -15,11 +15,14 @@ class ConfigurableTest extends TestCase
     /** @var CpuLoadCheck */
     public $cpuLoadCheck;
 
+    /** @var string */
+    public $hostName = 'admin.test.com';
+
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->createHost('localhost', 65000, ['cpu']);
+        $this->createHost($this->hostName, 65000, ['cpu']);
 
         $this->check = Check::first();
 
@@ -30,7 +33,8 @@ class ConfigurableTest extends TestCase
     public function host_config_value()
     {
         $configValue = 0.1;
-        config()->set("server-monitor.{$this->check->host['name']}.cpu_load.one_minute_threshold", $configValue);
+
+        config()->set("server-monitor.admin_test_com.cpu_load.one_minute_threshold", $configValue);
         config()->set('server-monitor.cpu_load.one_minute_threshold', 0.4);
 
         $this->assertSame($configValue, $this->cpuLoadCheck->getFromConfig('cpu_load.one_minute_threshold', 0.5));

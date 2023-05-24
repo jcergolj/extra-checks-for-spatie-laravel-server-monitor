@@ -268,13 +268,15 @@ return [
 
     // host specific config values
     // you can override all or only some values on a host to host basis
-    'host.name.com' => [
+    // replace dots in host name string with underscores
+    // host.name.com => host_name_com
+    'host_name_one_com' => [
         'cpu_load' => [
             'one_minute_threshold' => 0.9,
         ],
     ],
 
-    'host.name.two.com' => [
+    'host_name_two_com' => [
         'cpu_load' => [
             'one_minute_threshold' => 1.2,
             'five_minute_threshold' => 1.2,
