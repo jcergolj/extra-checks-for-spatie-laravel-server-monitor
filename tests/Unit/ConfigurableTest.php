@@ -34,7 +34,7 @@ class ConfigurableTest extends TestCase
     {
         $configValue = 0.1;
 
-        config()->set("server-monitor.admin_test_com.cpu_load.one_minute_threshold", $configValue);
+        config()->set('server-monitor.admin_test_com.cpu_load.one_minute_threshold', $configValue);
         config()->set('server-monitor.cpu_load.one_minute_threshold', 0.4);
 
         $this->assertSame($configValue, $this->cpuLoadCheck->getFromConfig('cpu_load.one_minute_threshold', 0.5));

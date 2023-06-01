@@ -1,6 +1,6 @@
 {
     "name": "jcergolj/extra-checks-for-spatie-laravel-server-monitor",
-    "description": " Additional custom checks for Spatie laravel-server-monitor package",
+    "description": "Additional custom checks for Spatie laravel-server-monitor package",
     "license": "MIT",
     "authors": [
         {
@@ -10,11 +10,15 @@
     ],
     "minimum-stability": "dev",
     "prefer-stable" : true,
-     "autoload": {
-      "psr-4": {
-        "Jcergolj\\CustomChecks\\": "src/",
-        "Jcergolj\\CustomChecks\\Tests\\": "tests/"
-      }
+    "autoload": {
+        "psr-4": {
+            "Jcergolj\\CustomChecks\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Jcergolj\\CustomChecks\\Tests\\": "tests/"
+        }
     },
     "scripts": {
         "pint": "vendor/bin/pint",
